@@ -3,12 +3,12 @@
 This Clojure program uses [Overtone](http://overtone.github.io) to produce sound and [Quil](https://github.com/quil/quil) to draw the keyboard.
 
 This keyboard with [rhombitrihexagonal tiling](http://en.wikipedia.org/wiki/Rhombitrihexagonal_tiling) arranges the 12 musical tones
-in a way to easily access chords in addition to single notes.
+in a way that enables easy access to chords as well as single notes.
 
 ![alt text](resources/eulerian-keyboard.png "Eulerian Keyboard")
 
 One way to represent the 12 tones is the [circle of fifths] (http://en.wikipedia.org/wiki/Circle_of_fifths).
-![alt text](resources/Tonnetz.png "Tonnetz - Tone Net")
+![alt text](http://upload.wikimedia.org/wikipedia/commons/3/33/Circle_of_fifths_deluxe_4.svg "Circle of fifths")
 
 Another way is to use a lattice or a graph.
 In 1739, the Swiss mathematician and physicist [Leonard Euler] (http://en.wikipedia.org/wiki/Leonhard_Euler)
