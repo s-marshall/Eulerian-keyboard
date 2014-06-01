@@ -1,0 +1,500 @@
+e
+(e ecb)
+(def clr {:R 140 :G 150 :B 0})
+clr
+(def clr {:R 140 :G 150 :B 0})
+(def ecb-2 (update-color clr e ecb))
+(e ecb-2)
+(e ecb)
+(def x (first (e ecb)))
+x
+(def b {:a (atom ant) :b (atom bat)})
+(doc atom)
+(def b {:a (atom nil) :b (atom nil)})
+b
+(:a b)
+(swap! (:a b) (fn [x] 98))
+b
+(:a b)
+@(:a b)
+exit
+(component single-note
+           [xy-index color label]
+           {:xy-index (atom xy-index)
+            :sound (atom (single-note-sound xy-index))
+            :color (atom color)
+            :label (atom label)})
+(single-note {:x 4 :y 7} {:r 3 :g 5 :b 8} "hell")
+(def s(single-note {:x 4 :y 7} {:r 3 :g 5 :b 8} "hell"))
+s
+@(s :label)
+(component single-note
+           [xy-index color label]
+           {:xy-index (atom xy-index)
+            :sound (atom (single-note-sound xy-index))
+            :color (atom color)
+            :label (atom label)})
+(component dyad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (:square key-colors)]
+                           {:R color :G color :B color}))
+            :sound (atom (into () (dyad-sound xy-index category)))})
+(component triad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (if (odd? category)
+                                 (:up-tri key-colors)
+                                 (:down-tri key-colors))]
+                     {:R color :G color :B color}))
+            :sound (atom (triad-sound xy-index category))})
+(def single-notes (for [x (range 12) y (range 9)
+                        :let [key-color (if (= "C" (nth (nth note-labels y) x))
+                                          {:R 0 :G 0 :B 255}
+                                          {:R (:hex key-colors) :G (:hex key-colors) :B (:hex key-colors)})]]
+                    (single-note {:x x :y y} key-color (nth (nth note-labels y) x))))
+single-notes
+(defmacro component [component-name params & settings]
+  `(defn ~component-name ~params
+     (merge ~{:name (atom (keyword (name component-name)))} ~@settings)))
+(defn add-component-to-entity [entity-component-db component entity]
+  (let [stored-component (entity entity-component-db)
+        not-stored? (nil? stored-component)
+        entity-component-db (if not-stored?
+                              (merge {entity [component]} entity-component-db)
+                              (let [has-component? (some #(= @(:name %) @(:name component)) stored-component)]
+                                (if has-component?
+                                  entity-component-db
+;                                  (assoc-in entity-component-db [entity] (conj stored-component component)))))]
+                                  (swap! (entity entity-component-db) (conj stored-component component)))))]
+    entity-component-db))
+(def single-notes (for [x (range 12) y (range 9)
+                        :let [key-color (if (= "C" (nth (nth note-labels y) x))
+                                          {:R 0 :G 0 :B 255}
+                                          {:R (:hex key-colors) :G (:hex key-colors) :B (:hex key-colors)})]]
+                    (single-note {:x x :y y} key-color (nth (nth note-labels y) x))))
+single-notes
+(component single-note
+           [xy-index color label]
+           {:xy-index (atom xy-index)
+            :sound (atom (single-note-sound xy-index))
+            :color (atom color)
+            :label (atom label)})
+(component dyad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (:square key-colors)]
+                           {:R color :G color :B color}))
+            :sound (atom (into () (dyad-sound xy-index category)))})
+(component triad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (if (odd? category)
+                                 (:up-tri key-colors)
+                                 (:down-tri key-colors))]
+                     {:R color :G color :B color}))
+            :sound (atom (triad-sound xy-index category))})
+(defmacro component [component-name params & settings]
+  `(defn ~component-name ~params
+     (merge ~{:name (keyword (name component-name))} ~@settings)))
+(defmacro component [component-name params & settings]
+  `(defn ~component-name ~params
+     (merge ~{:name (keyword (name component-name))} ~@settings)))
+(defn add-component-to-entity [entity-component-db component entity]
+  (let [stored-component (entity entity-component-db)
+        not-stored? (nil? stored-component)
+        entity-component-db (if not-stored?
+                              (merge {entity [component]} entity-component-db)
+                              (let [has-component? (some #(= (:name %) (:name component)) stored-component)]
+                                (if has-component?
+                                  entity-component-db
+;                                  (assoc-in entity-component-db [entity] (conj stored-component component)))))]
+                                  (swap! (entity entity-component-db) (conj stored-component component)))))]
+    entity-component-db))
+(component single-note
+           [xy-index color label]
+           {:xy-index (atom xy-index)
+            :sound (atom (single-note-sound xy-index))
+            :color (atom color)
+            :label (atom label)})
+(component dyad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (:square key-colors)]
+                           {:R color :G color :B color}))
+            :sound (atom (into () (dyad-sound xy-index category)))})
+(component triad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (if (odd? category)
+                                 (:up-tri key-colors)
+                                 (:down-tri key-colors))]
+                     {:R color :G color :B color}))
+            :sound (atom (triad-sound xy-index category))})
+(def single-notes (for [x (range 12) y (range 9)
+                        :let [key-color (if (= "C" (nth (nth note-labels y) x))
+                                          {:R 0 :G 0 :B 255}
+                                          {:R (:hex key-colors) :G (:hex key-colors) :B (:hex key-colors)})]]
+                    (single-note {:x x :y y} key-color (nth (nth note-labels y) x))))
+single-notes
+(def dyads (create-ads dyad indices []))
+(def triads (create-ads triad indices []))
+dyads
+(def db {})
+(def db (update-db db (into single-notes (into dyads triads))))
+db
+(def ds (entities-with-component :dyad))
+ds
+(def entity-component-db (hash-map))
+(def entity-component-db
+  (update-db entity-component-db (into single-notes (into dyads triads))))
+(entities-with-component :dyad)
+(def dyad-entities (entities-with-component :dyad))
+(def triad-entities (entities-with-component :triad))
+triad-entities
+(defn same-sound-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (map #(first %) entity-components)))
+(defn same-sound-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound (:sound @(last %))) entities)]
+    (map #(first %) entity-components)))
+(defn sound-intersections [ad-entities]
+  (apply merge
+         (doall
+          (for [entity-component ad-entities
+                :let [entities (same-sound-entities (:sound @(last entity-component)))
+                      perms (combo/permutations entities)]]
+            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
+(def shared-dyads (sound-intersections dyad-entities))
+(def shared-triads (sound-intersections triad-entities))
+(def entity-component-db (hash-map))
+(def entity-component-db
+  (update-db entity-component-db (into single-notes (into dyads triads))))
+(def dyad-entities (entities-with-component :dyad))
+(def triad-entities (entities-with-component :triad))
+(defn same-sounds? [a b]
+  ((complement empty?) (some #{a} (combo/permutations b))))
+(defn same-sound-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound (:sound @(last %))) entities)]
+    (map #(first %) entity-components)))
+(defn sound-intersections [ad-entities]
+  (apply merge
+         (doall
+          (for [entity-component ad-entities
+                :let [entities (same-sound-entities (:sound @(last entity-component)))
+                      perms (combo/permutations entities)]]
+            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
+(def shared-dyads (sound-intersections dyad-entities))
+(def shared-triads (sound-intersections triad-entities))
+(defn index->screen-position [xy-index edge-offset]
+  (let [even-row-start (+ (* 1.5 FULL-LENGTH) (* 2 FULL-LENGTH (Math/cos THIRTY-DEG)))
+        odd-row-start (+ FULL-LENGTH (* FULL-LENGTH (Math/cos THIRTY-DEG)))
+        center-spacing (+ FULL-LENGTH (* 2 FULL-LENGTH (Math/cos THIRTY-DEG)))
+        line-spacing  (+ FULL-LENGTH (* 1.5 FULL-LENGTH (Math/cos THIRTY-DEG)))
+        offset (:x xy-index)
+        x-position (if (even? @(:y xy-index))
+                     (+ (:x edge-offset) even-row-start (* offset center-spacing))
+                     (+ (:x edge-offset) odd-row-start (* offset center-spacing)))
+        y-position (+ (:y edge-offset) (* @(:y xy-index) line-spacing))
+        x (+ (:x edge-offset) x-position)
+        y (+ (:y edge-offset) y-position)]
+    {:x x-position :y y-position}))
+(def entity-component-db (hash-map))
+(def entity-component-db
+  (update-db entity-component-db (into single-notes (into dyads triads))))
+(first entity-component-db)
+exit
+(count entity-component-db)
+dyads
+(def circle-of-fifths ["Eb" "Bb" "F" "C" "G" "D" "A" "E" "B" "F#" "Db" "Ab"])
+(def first-element-in-row ["Eb" "B" "D" "Bb" "Db" "A" "C" "Ab" "B"])
+(defn generate-note-names [names first-element-in-row circle-of-fifths]
+  (if (empty? first-element-in-row)
+    names
+    (let [start-position (.indexOf circle-of-fifths (first first-element-in-row))
+          names (into names [(map #(nth circle-of-fifths (mod % 12)) (range start-position (+ 12 start-position)))])]
+      (generate-note-names names (rest first-element-in-row) circle-of-fifths))))
+(def note-labels (generate-note-names [] first-element-in-row circle-of-fifths))
+(defn single-note-sound [xy-index]
+  (let [x (:x xy-index)
+        y (:y xy-index)
+        octave (- 8 y)
+        note-name (nth (nth note-labels y) x)]
+    (keyword (str note-name octave))))
+(defn get-octave [number]
+  (- 8 (max (min number 8) 0)))
+(defn get-note-name [note-symbol]
+  (let [note-string (name note-symbol)
+        octave (re-find #"\d" note-string)
+        end (.indexOf note-string octave)]
+    (subs note-string 0 end)))
+(defn dyad-sound [reference-note category]
+  (let [x (:x reference-note)
+        y (:y reference-note)
+        first-sound (single-note-sound reference-note)
+        note (get-note-name first-sound)
+        index (.indexOf circle-of-fifths note)
+        note-2 (condp = category
+                 0 {:note (inc index) :octave y}
+                 1 {:note (+ index 9) :octave (inc y)}
+                 2 {:note (+ index 8) :octave (inc y)}
+                 3 {:note (+ index 11) :octave y}
+                 4 {:note (+ index 3) :octave (dec y)}
+                   {:note (+ index 4) :octave (dec y)})
+        second-index (mod (:note note-2) 12)
+        second-note (nth circle-of-fifths second-index)
+        octave (get-octave (:octave note-2))
+        second-sound (keyword (str second-note octave))]
+    [first-sound second-sound]))
+(defn triad-sound [reference-note category]
+  (distinct (flatten [(dyad-sound reference-note category)
+                      (dyad-sound reference-note (mod (inc category) 6))])))
+(component single-note
+           [xy-index color label]
+           {:xy-index (atom xy-index)
+            :sound (atom (single-note-sound xy-index))
+            :color (atom color)
+            :label (atom label)})
+(component dyad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (:square key-colors)]
+                           {:R color :G color :B color}))
+            :sound (atom (into () (dyad-sound xy-index category)))})
+(component triad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (if (odd? category)
+                                 (:up-tri key-colors)
+                                 (:down-tri key-colors))]
+                     {:R color :G color :B color}))
+            :sound (atom (triad-sound xy-index category))})
+(def entity-component-db (hash-map))
+(defn entity []
+  (keyword (str (java.util.UUID/randomUUID))))
+(defmacro component [component-name params & settings]
+  `(defn ~component-name ~params
+     (merge ~{:name (keyword (name component-name))} ~@settings)))
+(defn add-component-to-entity [entity-component-db component entity]
+  (let [stored-component (entity entity-component-db)
+        not-stored? (nil? stored-component)
+        entity-component-db (if not-stored?
+                              (merge {entity [component]} entity-component-db)
+                              (let [has-component? (some #(= (:name %) (:name component)) stored-component)]
+                                (if has-component?
+                                  entity-component-db
+;                                  (assoc-in entity-component-db [entity] (conj stored-component component)))))]
+                                  (swap! (entity entity-component-db) (conj stored-component component)))))]
+    entity-component-db))
+(defn remove-entity [entity]
+  (apply dissoc entity-component-db [entity]))
+(defn entities-with-component [component-name]
+  (for [entity-components entity-component-db
+        :let [entity (key entity-components)
+              components (val entity-components)]
+        :when (some #(= (:name %) component-name) components)]
+    [entity
+     (first (filter #(= component-name (:name %)) (entity entity-component-db)))]))
+(defn component-in-entity [component-name entity]
+  (first (filter #(= component-name (:name %)) (entity entity-component-db))))
+(defn entities-satisfying [goal category entities]
+  (filter #(= goal (category (last %))) entities))
+(defn triad-sound [reference-note category]
+  (distinct (flatten [(dyad-sound reference-note category)
+                      (dyad-sound reference-note (mod (inc category) 6))])))
+(component single-note
+           [xy-index color label]
+           {:xy-index (atom xy-index)
+            :sound (atom (single-note-sound xy-index))
+            :color (atom color)
+            :label (atom label)})
+(component dyad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (:square key-colors)]
+                           {:R color :G color :B color}))
+            :sound (atom (into () (dyad-sound xy-index category)))})
+(component triad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (if (odd? category)
+                                 (:up-tri key-colors)
+                                 (:down-tri key-colors))]
+                     {:R color :G color :B color}))
+            :sound (atom (triad-sound xy-index category))})
+(def input (atom :drag))
+(def key-colors {:hex 0 :square 204 :up-tri 150 :down-tri 82 :label 255})
+(def key-highlight {:R 145 :G 0 :B 0})
+(def key-sounds {:hex :single-note :square :dyad :up-tri :triad :down-tri :triad})
+(def key-played (atom nil))
+(def ^:const scaling-factor 0.35)
+(def ^:const background-color 40)
+(def edge-offset {:x 150 :y 250})
+(def key-indices (for [x (range 12) y (range 9)] [x y]))
+(component dyad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (:square key-colors)]
+                           {:R color :G color :B color}))
+            :sound (atom (into () (dyad-sound xy-index category)))})
+(component triad
+           [xy-index category]
+           {:xy-index (atom xy-index)
+            :category (atom category)
+            :color (atom (let [color (if (odd? category)
+                                 (:up-tri key-colors)
+                                 (:down-tri key-colors))]
+                     {:R color :G color :B color}))
+            :sound (atom (triad-sound xy-index category))})
+(defn update-db [db components]
+  (if (empty? components)
+    db
+    (let [component (first components)]
+      (update-db (add-component-to-entity db component (entity)) (rest components)))))
+(defn create-ads [func-ad indices ads]
+  (if (empty? indices)
+    ads
+    (let [i (first indices)
+          ad (func-ad {:x (:x i) :y (:y i)} (:index i))
+          notes (:sound ad)]
+      (create-ads func-ad (rest indices) (conj ads ad)))))
+(defn contains-note [note ad]
+  (condp = ad
+    :single-note (filter #(= note (:sound (last %))) (entities-with-component ad))
+    (filter #(some #{note} (:sound (last %))) (entities-with-component ad))))
+(def indices
+  (for [x (range 12) y (range 9) index (range 6)]
+    {:x x :y y :index index}))
+(def single-notes (for [x (range 12) y (range 9)
+                        :let [key-color (if (= "C" (nth (nth note-labels y) x))
+                                          {:R 0 :G 0 :B 255}
+                                          {:R (:hex key-colors) :G (:hex key-colors) :B (:hex key-colors)})]]
+                    (single-note {:x x :y y} key-color (nth (nth note-labels y) x))))
+(def dyads (create-ads dyad indices []))
+(def triads (create-ads triad indices []))
+(def entity-component-db (hash-map))
+(def entity-component-db
+  (update-db entity-component-db (into single-notes (into dyads triads))))
+(def dyad-entities (entities-with-component :dyad))
+(def triad-entities (entities-with-component :triad))
+(defn same-sounds? [a b]
+  ((complement empty?) (some #{a} (combo/permutations b))))
+(defn same-sound-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound (:sound @(last %))) entities)]
+    (map #(first %) entity-components)))
+(defn sound-intersections [ad-entities]
+  (apply merge
+         (doall
+          (for [entity-component ad-entities
+                :let [entities (same-sound-entities (:sound @(last entity-component)))
+                      perms (combo/permutations entities)]]
+            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
+(require [clojure.math.combinatorics :as combo])
+(use [clojure.math.combinatorics :as combo])
+(use '[clojure.math.combinatorics :as combo])
+(combo/permutations [1 2 3])
+(defn same-sounds? [a b]
+  ((complement empty?) (some #{a} (combo/permutations b))))
+(defn same-sound-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound (:sound @(last %))) entities)]
+    (map #(first %) entity-components)))
+(defn sound-intersections [ad-entities]
+  (apply merge
+         (doall
+          (for [entity-component ad-entities
+                :let [entities (same-sound-entities (:sound @(last entity-component)))
+                      perms (combo/permutations entities)]]
+            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
+(def shared-dyads (sound-intersections dyad-entities))
+(def shared-triads (sound-intersections triad-entities))
+(sound-intersections dyad-entities)
+dyad-entities
+(defn same-sound-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (map #(first %) entity-components)))
+(defn sound-intersections [ad-entities]
+  (apply merge
+         (doall
+          (for [entity-component ad-entities
+                :let [entities (same-sound-entities @(:sound (last entity-component)))
+                      perms (combo/permutations entities)]]
+            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
+(def shared-dyads (sound-intersections dyad-entities))
+shared-dyads
+(def shared-triads (sound-intersections triad-entities))
+exit
+(def f (fe)
+)
+(def f (first entity-component-db))
+f
+(swap! (:color (first entity-component-db)) (fn [x] {:R 5 :G 6 :B 7}))
+(:color (first entity-component-db))
+(count entity-component-db)
+(first entity-component-db)
+(swap! (:color (last (first entity-component-db))) (fn [x] {:R 5 :G 6 :B 7}))
+(first entity-component-db)
+(last (first entity-component-db))
+(:color (last (first entity-component-db)))
+(:color (first (last (first entity-component-db))))
+(swap! (:color (first (last (first entity-component-db)))) (fn [x] {:R 5 :G 6 :B 7}))
+(first entity-component-db)
+(defn update-color [color entity]
+  (let [component (first (last (first (entity entity-component-db))))]
+    (swap! (:color component) (fn [x] color))))
+exit
+ exit
+exit
+key-colors
+(defn get-key [h value]
+  (let [values (vals h)
+        key-names (keys h)
+        i (.indexOf values value)]
+    (nth key-names i)))
+@normal-color
+@normal-colorexit
+exit
+)
+(play-notes [:C4])
+(play-notes :C4)
+(play-notes [:C4])
+(play-note [:C4])
+exit
+key-played
+exit
+exiexit
+exit
+(let [a 1]
+:when (> a < 10)')
+(let [a 1
+:when (< a 10)]
+a)
+exit
+exi
+exit
+(map #(play-note %) [:C4 :E4 :G4])
+(defn play-notes [sounds-to-play]
+  (map #(play-note %) sounds-to-play))
+(play-notes [:C4 :E4 :G4])
+exit
+(play-note :4)
+(play-note :G4)
+(and (play-note :C4) (play-note :G4))
+(doall (play-note :C4) (play-note :G4))
+exit
