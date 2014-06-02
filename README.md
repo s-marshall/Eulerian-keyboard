@@ -32,7 +32,7 @@ The lowest notes are on the bottom, and the highest on the top. The C in the cen
 
 ## Making Noise
 
-![alt text](resources/eulerian-keyboard.m4v "Playing the keyboard")
+![alt text](https://www.youtube.com/watch?v=D9qHcWDIOH8&feature=youtu.be "Playing the keyboard")
 
 * To play
  * Mode 1 - Drag the mouse over the notes and chords
