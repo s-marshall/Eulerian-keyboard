@@ -32,13 +32,16 @@ The lowest notes are on the bottom, and the highest on the top. The C in the cen
 
 ## Making Noise
 
+![alt text](resources/eulerian-keyboard.m4v "Playing the keyboard")
+
 * To play
  * Mode 1 - Drag the mouse over the notes and chords
  * Mode 2 - Click to play individual notes or chords
  * Press any key on the keyboard with switch between the modes.
 
 Due to the lousy interface of a keyboard and a mouse, Mode 1 is recommended.
-The sound is a simple triangle wave, unless you can connect a MIDI instrument.
+The sound is a simple triangle wave, unless you can connect a MIDI instrument to your computer.
+
 
 ## License
 

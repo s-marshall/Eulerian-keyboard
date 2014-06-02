@@ -143,8 +143,7 @@
 
             possible-sounds (if (= key-type :single-note)
                               [@(:sound (last (first local-keys)))]
-                              (into [] @(:sound (last (first (entities-satisfying category :category local-keys))))))
-            p (println possible-sounds)]
+                              (into [] @(:sound (last (first (entities-satisfying category :category local-keys))))))]
         (play-notes possible-sounds)))))
 
 
