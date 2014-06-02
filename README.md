@@ -28,11 +28,11 @@ Some of muscial relationships easily recognized from the Eulerian keyboard are [
 * Triangle - triad chord of the three notes at the vertices
 
 Each row on the keyboard is an octave.
-The lowest notes are on the bottom, and the highest on the top. The C in the center is middle C (C4 in [MIDI] (http://en.wikipedia.org/wiki/Midi)).
+The lowest notes are on the bottom, and the highest on the top. The C in the center is middle C (C4 in [MIDI](http://en.wikipedia.org/wiki/Midi)).
 
 ## Making Noise
 
-![alt text](https://www.youtube.com/watch?v=D9qHcWDIOH8&feature=youtu.be "Playing the keyboard")
+[Playing the keyboard](http://www.youtube.com/embed/D9qHcWDIOH8 "Playing the keyboard")
 
 * To play
  * Mode 1 - Drag the mouse over the notes and chords
