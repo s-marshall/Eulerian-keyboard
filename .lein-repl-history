@@ -1,87 +1,3 @@
-e
-(e ecb)
-(def clr {:R 140 :G 150 :B 0})
-clr
-(def clr {:R 140 :G 150 :B 0})
-(def ecb-2 (update-color clr e ecb))
-(e ecb-2)
-(e ecb)
-(def x (first (e ecb)))
-x
-(def b {:a (atom ant) :b (atom bat)})
-(doc atom)
-(def b {:a (atom nil) :b (atom nil)})
-b
-(:a b)
-(swap! (:a b) (fn [x] 98))
-b
-(:a b)
-@(:a b)
-exit
-(component single-note
-           [xy-index color label]
-           {:xy-index (atom xy-index)
-            :sound (atom (single-note-sound xy-index))
-            :color (atom color)
-            :label (atom label)})
-(single-note {:x 4 :y 7} {:r 3 :g 5 :b 8} "hell")
-(def s(single-note {:x 4 :y 7} {:r 3 :g 5 :b 8} "hell"))
-s
-@(s :label)
-(component single-note
-           [xy-index color label]
-           {:xy-index (atom xy-index)
-            :sound (atom (single-note-sound xy-index))
-            :color (atom color)
-            :label (atom label)})
-(component dyad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (:square key-colors)]
-                           {:R color :G color :B color}))
-            :sound (atom (into () (dyad-sound xy-index category)))})
-(component triad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (if (odd? category)
-                                 (:up-tri key-colors)
-                                 (:down-tri key-colors))]
-                     {:R color :G color :B color}))
-            :sound (atom (triad-sound xy-index category))})
-(def single-notes (for [x (range 12) y (range 9)
-                        :let [key-color (if (= "C" (nth (nth note-labels y) x))
-                                          {:R 0 :G 0 :B 255}
-                                          {:R (:hex key-colors) :G (:hex key-colors) :B (:hex key-colors)})]]
-                    (single-note {:x x :y y} key-color (nth (nth note-labels y) x))))
-single-notes
-(defmacro component [component-name params & settings]
-  `(defn ~component-name ~params
-     (merge ~{:name (atom (keyword (name component-name)))} ~@settings)))
-(defn add-component-to-entity [entity-component-db component entity]
-  (let [stored-component (entity entity-component-db)
-        not-stored? (nil? stored-component)
-        entity-component-db (if not-stored?
-                              (merge {entity [component]} entity-component-db)
-                              (let [has-component? (some #(= @(:name %) @(:name component)) stored-component)]
-                                (if has-component?
-                                  entity-component-db
-;                                  (assoc-in entity-component-db [entity] (conj stored-component component)))))]
-                                  (swap! (entity entity-component-db) (conj stored-component component)))))]
-    entity-component-db))
-(def single-notes (for [x (range 12) y (range 9)
-                        :let [key-color (if (= "C" (nth (nth note-labels y) x))
-                                          {:R 0 :G 0 :B 255}
-                                          {:R (:hex key-colors) :G (:hex key-colors) :B (:hex key-colors)})]]
-                    (single-note {:x x :y y} key-color (nth (nth note-labels y) x))))
-single-notes
-(component single-note
-           [xy-index color label]
-           {:xy-index (atom xy-index)
-            :sound (atom (single-note-sound xy-index))
-            :color (atom color)
-            :label (atom label)})
 (component dyad
            [xy-index category]
            {:xy-index (atom xy-index)
@@ -497,4 +413,88 @@ exit
 (play-note :G4)
 (and (play-note :C4) (play-note :G4))
 (doall (play-note :C4) (play-note :G4))
+exit
+(entities-with-component :dyad)
+exit
+(entities-with-component :dyad)
+(defn update-played [value entity]
+  (let [entity-component (entity entity-component-db)
+        component (last entity-component)]
+    (!swap (:played component) value)))
+(defn update-played [value entity]
+  (let [entity-component (entity entity-component-db)
+        component (last entity-component)]
+    (swap! (:played component) value)))
+(def f (first entity-component-db))
+(def c (last f))
+c
+(def e :ddb22dc6-e9ff-47ce-8123-a40f4bd51a34 )
+e
+(e entity-component-db)
+(defn update-played [value entity]
+  (let [component (entity entity-component-db)]
+    (swap! (:played component) value)))
+(update-played true e)
+(defn update-played [value entity]
+  (let [component (first (entity entity-component-db))]
+    (swap! (:played component) value)))
+(update-played true e)
+(def c (first (e entity-component-db)))
+c
+@(:played c)
+(defn update-played [value entity]
+  (let [component (first (entity entity-component-db))]
+    (swap! (:played component) (fn [x] value))))
+(update-played true e)
+(e entity-component-db)
+(update-played false e)
+(e entity-component-db)
+exit
+(sqrt 4)
+(Math/sqrt 4)
+exit
+(Math/tan THIRTY-DEG)
+exit
+(/ 1 3 2)
+exit
+exitexit
+exit
+shared-dyads
+(apply and '( true false true))
+(apply + '(1 0 0 1 0))
+exit
+(defn key-competitors [entity]
+  (let [component (entity entity-component-db)
+        key-name (:name component)
+        competitors (if (= key-name :dyad) (entity shared-dyads) (entity shared-triads))]
+    (conj competitors entity)))
+(nth entity-component-db 56)
+shared-triads
+(key-competitors :2053d97f-928b-436f-a912-d95d75a8e9b0)
+(defn highlight-color? [key-sharing-entities]
+  (let [played? (apply + (for [entity key-sharing-entities
+                               :let [component (entity entity-component-db)
+                                     played? @(:played component)]]
+                           (if played? 1 0)))]
+    (if (= played? 0) false true)))
+(def k (key-competitors :2053d97f-928b-436f-a912-d95d75a8e9b0))
+k
+(highlight-color? k)
+k
+(first k)
+((first k) entity-component-db)
+(and false false true)
+(defn highlight-color? [key-sharing-entities]
+  (let [played? (apply + (for [entity key-sharing-entities
+                               :let [component (first (entity entity-component-db))
+                                     played? @(:played component)]]
+                           (if played? 1 0)))]
+    (if (= played? 0) false true)))
+(highlight-color? k)
+exit
+(not empty?
+)
+((not empty?) [])
+exit
+(true? true)
 exit

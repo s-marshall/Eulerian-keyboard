@@ -14,10 +14,10 @@
 (def key-indices (for [x (range 12) y (range 9)] [x y]))
 
 (load-file "src/leonhard/entity-component.clj")
+(load-file "src/leonhard/initialize-db.clj")
 (load-file "src/leonhard/keyboard.clj")
 (load-file "src/leonhard/sounds.clj")
 (load-file "src/leonhard/processors.clj")
-(load-file "src/leonhard/initialize-db.clj")
 
 (defn setup []
   (q/smooth)
@@ -33,59 +33,28 @@
     (when ((complement empty?) entities)
       (let [entity-component (first entities)
             component (last (flatten entity-component))
-            component-color @(:color component)
             entity (first entity-component)
+            component-color @(:color component)
 
             screen-position (index->screen-position @(:xy-index component) edge-offset)
-            component-name (:name component)]
 
-        (q/fill (:R component-color) (:G component-color) (:B component-color))
+            key-sharing-entities (key-competitors entity)
+            drawn? (key-drawn? key-sharing-entities)]
 
-        (condp = component-name
-          :single-note (let [label @(:label component)
-                             label-color (:label key-colors)]
-                         (draw-hexagon screen-position)
-                         (add-label label screen-position {:R label-color :G label-color :B label-color}))
-          :dyad (let [category @(:category component)]
-                  (draw-square screen-position category))
-          :triad (let [category @(:category component)]
-                  (draw-triangle screen-position category))))
-      (recur (rest entities)))))
+        (when (not drawn?)
+          (condp = (:name component)
+            :single-note (let [label @(:label component)
+                               label-color (:label key-colors)]
+                           (draw-hexagon screen-position component-color)
+                           (add-label label screen-position {:R label-color :G label-color :B label-color}))
+            :dyad (let [category @(:category component)]
+                    (draw-square screen-position category component-color))
+            :triad (let [category @(:category component)]
+                     (draw-triangle screen-position category component-color))))
 
-(defn play-key []
-  (let [x (q/mouse-x)
-        y (q/mouse-y)
-
-        color (q/get-pixel x y)
-        red-color (int (q/red color))
-
-        key-pressed (cond
-                     (= red-color (:label key-colors)) :hex
-                     (= red-color (:hex key-colors)) :hex
-                     (= red-color (:square key-colors)) :square
-                     (= red-color (:up-tri key-colors)) :up-tri
-                     (= red-color (:down-tri key-colors)) :down-tri
-                     :else :ignore)]
-
-    (when (not= :ignore key-pressed)
-      (let [reference-key (closest-note {:x x :y y} key-indices 1000 {:x 0 :y 0})
-            reference-position (index->screen-position reference-key edge-offset)
-            category (chord-category key-pressed {:x x :y y} reference-position)
-
-            key-type (key-pressed key-sounds)
-
-            entities (entities-with-component key-type)
-            local-keys (entities-satisfying reference-key :xy-index entities)
-
-            entity-played (if (= key-type :single-note)
-                            (first (first local-keys))
-                            (first (first (entities-satisfying category :category local-keys))))
-
-            possible-sounds (if (= key-type :single-note)
-                              [@(:sound (last (first local-keys)))]
-                              (into [] @(:sound (last (first (entities-satisfying category :category local-keys))))))
-            p (println possible-sounds)]
-        (play-notes possible-sounds)))))
+        (for [e key-sharing-entities]
+          (update-drawn true e))
+      (recur (rest entities))))))
 
 (defn mouse-clicked [] ; Click to play note or chords
   (when (= @input :click)

@@ -5,6 +5,8 @@
 
 (def ^:const FULL-LENGTH 100)
 (def ^:const HALF-LENGTH (/ FULL-LENGTH 2))
+(def ^:const VERTEX-TO-CENTER (/ FULL-LENGTH 2 (Math/cos THIRTY-DEG)))
+(def ^:const SIDE-TO-CENTER (* FULL-LENGTH 0.5 (Math/tan THIRTY-DEG)))
 
 (defn negate [x] (- 0 x))
 
@@ -22,16 +24,15 @@
 
 (defn square-key []
   (q/begin-shape)
-  (q/vertex HALF-LENGTH (negate HALF-LENGTH))
-  (q/vertex HALF-LENGTH HALF-LENGTH)
   (q/vertex (negate HALF-LENGTH) HALF-LENGTH)
+  (q/vertex HALF-LENGTH HALF-LENGTH)
+  (q/vertex HALF-LENGTH (negate HALF-LENGTH))
   (q/vertex (negate HALF-LENGTH) (negate HALF-LENGTH))
   (q/end-shape :close))
 
 (defn triangle-key []
-  (let [delta (* HALF-LENGTH (Math/cos THIRTY-DEG) (Math/cos FORTY-FIVE-DEG))]
-    (q/begin-shape)
-    (q/vertex 0 0)
-    (q/vertex (* FULL-LENGTH (Math/sin THIRTY-DEG)) (* FULL-LENGTH (Math/cos THIRTY-DEG)))
-    (q/vertex FULL-LENGTH 0)
-    (q/end-shape :close)))
+  (q/begin-shape)
+  (q/vertex (negate HALF-LENGTH) (negate SIDE-TO-CENTER))
+  (q/vertex HALF-LENGTH (negate SIDE-TO-CENTER))
+  (q/vertex 0 VERTEX-TO-CENTER)
+  (q/end-shape :close))

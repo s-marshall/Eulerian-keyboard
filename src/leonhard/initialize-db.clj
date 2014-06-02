@@ -56,7 +56,8 @@
            {:xy-index (atom xy-index)
             :sound (atom (single-note-sound xy-index))
             :color (atom color)
-            :label (atom label)})
+            :label (atom label)
+            :drawn (atom false)})
 
 (component dyad
            [xy-index category]
@@ -64,7 +65,8 @@
             :category (atom category)
             :color (atom (let [color (:square key-colors)]
                            {:R color :G color :B color}))
-            :sound (atom (into () (dyad-sound xy-index category)))})
+            :sound (atom (into () (dyad-sound xy-index category)))
+            :drawn (atom false)})
 
 (component triad
            [xy-index category]
@@ -74,7 +76,8 @@
                                  (:up-tri key-colors)
                                  (:down-tri key-colors))]
                      {:R color :G color :B color}))
-            :sound (atom (triad-sound xy-index category))})
+            :sound (atom (triad-sound xy-index category))
+            :drawn (atom false)})
 
 (defn update-db [db components]
   (if (empty? components)
@@ -132,3 +135,8 @@
 
 (def shared-dyads (sound-intersections dyad-entities))
 (def shared-triads (sound-intersections triad-entities))
+
+(defn update-drawn [value entity]
+  (let [component (first (entity entity-component-db))]
+    (swap! (:drawn component) (fn [x] value))))
+

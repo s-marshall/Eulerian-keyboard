@@ -1,22 +1,25 @@
-(defn draw-hexagon [translation]
-  (q/with-translation [(:x translation) (:y translation)]
-                        (hexagonal-key)))
+(defn draw-hexagon [center-position color]
+  (q/fill (:R color) (:G color) (:B color))
+  (q/with-translation [(:x center-position) (:y center-position)]
+                      (hexagonal-key)))
 
-(defn draw-square [translation offset]
-  (let [center-position (* FULL-LENGTH (+ 0.5 (Math/cos THIRTY-DEG)))
+(defn draw-square [center-position offset color]
+  (q/fill (:R color) (:G color) (:B color))
+  (let [hyp (* FULL-LENGTH (+ 0.5 (Math/cos THIRTY-DEG)))
         theta (* offset SIXTY-DEG)
-        x (* center-position (Math/cos theta))
-        y (* center-position (Math/sin theta))]
-    (q/with-translation [(+ (:x translation) x) (+ (:y translation) y)]
-                          (q/with-rotation [(* (- 6 offset) THIRTY-DEG)]
-
+        x (* hyp (Math/cos theta))
+        y (* hyp (Math/sin theta))]
+    (q/with-translation [(+ (:x center-position) x) (+ (:y center-position) y)]
+                          (q/with-rotation [(* (- offset 6) SIXTY-DEG)]
                                          (square-key)))))
 
-(defn draw-triangle [translation offset]
-  (let [theta (+ THIRTY-DEG (* offset SIXTY-DEG))
-        x (* FULL-LENGTH (Math/cos theta))
-        y (* FULL-LENGTH (Math/sin theta))]
-    (q/with-translation [(+ (:x translation) x) (+ (:y translation) y)]
+(defn draw-triangle [center-position offset color]
+  (q/fill (:R color) (:G color) (:B color))
+  (let [hyp (+ FULL-LENGTH VERTEX-TO-CENTER)
+        theta (+ THIRTY-DEG (* offset SIXTY-DEG))
+        x (* hyp (Math/cos theta))
+        y (* hyp (Math/sin theta))]
+    (q/with-translation [(+ (:x center-position) x) (+ (:y center-position) y)]
                         (q/with-rotation [(* offset SIXTY-DEG)]
                                          (triangle-key)))))
 
@@ -86,3 +89,62 @@
     (if (= key-type :square)
       (find-range theta -30 0)
       (find-range theta 0 0))))
+
+(defn key-competitors [entity]
+  (let [component (entity entity-component-db)
+        competitors (if (= (:name component) :dyad)
+                      (entity shared-dyads)
+                      (entity shared-triads))]
+    (conj competitors entity)))
+
+(defn key-drawn? [key-sharing-entities]
+  (let [drawn (filter #(true? @(:drawn (first (% entity-component-db)))) key-sharing-entities)]
+    (if (empty? drawn) false true)))
+
+(defn type-of-key [position]
+  (let [x (:x position)
+        y (:y position)
+
+        color (q/get-pixel x y)
+        red-color (int (q/red color))
+
+        key-pressed (cond
+                     (= red-color (:label key-colors)) :hex
+                     (= red-color (:hex key-colors)) :hex
+                     (= red-color (:square key-colors)) :square
+                     (= red-color (:up-tri key-colors)) :up-tri
+                     (= red-color (:down-tri key-colors)) :down-tri
+                     :else :not-a-key)]
+   key-pressed))
+
+(defn play-key []
+  (let [x (q/mouse-x)
+        y (q/mouse-y)
+
+        color (q/get-pixel x y)
+        red-color (int (q/red color))
+
+        key-pressed (type-of-key {:x x :y y})]
+
+    (when (not= :not-a-key key-pressed)
+
+      (let [reference-key (closest-note {:x x :y y} key-indices 1000 {:x 0 :y 0})
+            reference-position (index->screen-position reference-key edge-offset)
+            category (chord-category key-pressed {:x x :y y} reference-position)
+
+            key-type (key-pressed key-sounds)
+
+            entities (entities-with-component key-type)
+            local-keys (entities-satisfying reference-key :xy-index entities)
+
+            entity-played (if (= key-type :single-note)
+                            (first (first local-keys))
+                            (first (first (entities-satisfying category :category local-keys))))
+
+            possible-sounds (if (= key-type :single-note)
+                              [@(:sound (last (first local-keys)))]
+                              (into [] @(:sound (last (first (entities-satisfying category :category local-keys))))))
+            p (println possible-sounds)]
+        (play-notes possible-sounds)))))
+
+
