@@ -32,28 +32,21 @@
 
     (when ((complement empty?) entities)
       (let [entity-component (first entities)
-            component (last (flatten entity-component))
             entity (first entity-component)
+            component (first (entity entity-component-db))
             component-color @(:color component)
 
-            screen-position (index->screen-position @(:xy-index component) edge-offset)
+            screen-position (index->screen-position @(:xy-index component) edge-offset)]
 
-            key-sharing-entities (key-competitors entity)
-            drawn? (key-drawn? key-sharing-entities)]
-
-        (when (not drawn?)
-          (condp = (:name component)
-            :single-note (let [label @(:label component)
-                               label-color (:label key-colors)]
-                           (draw-hexagon screen-position component-color)
-                           (add-label label screen-position {:R label-color :G label-color :B label-color}))
-            :dyad (let [category @(:category component)]
-                    (draw-square screen-position category component-color))
-            :triad (let [category @(:category component)]
-                     (draw-triangle screen-position category component-color))))
-
-        (for [e key-sharing-entities]
-          (update-drawn true e))
+        (condp = (:name component)
+          :single-note (let [label @(:label component)
+                             label-color (:label key-colors)]
+                         (draw-hexagon screen-position component-color)
+                         (add-label label screen-position {:R label-color :G label-color :B label-color}))
+          :dyad (let [category @(:category component)]
+                  (draw-square screen-position category component-color))
+          :triad (let [category @(:category component)]
+                   (draw-triangle screen-position category component-color)))
       (recur (rest entities))))))
 
 (defn mouse-clicked [] ; Click to play note or chords

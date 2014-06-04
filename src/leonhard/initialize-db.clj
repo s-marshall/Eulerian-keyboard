@@ -57,7 +57,7 @@
             :sound (atom (single-note-sound xy-index))
             :color (atom color)
             :label (atom label)
-            :drawn (atom false)})
+            :played (atom false)})
 
 (component dyad
            [xy-index category]
@@ -66,7 +66,8 @@
             :color (atom (let [color (:square key-colors)]
                            {:R color :G color :B color}))
             :sound (atom (into () (dyad-sound xy-index category)))
-            :drawn (atom false)})
+            :enharmonics (atom nil)
+            :played (atom false)})
 
 (component triad
            [xy-index category]
@@ -77,7 +78,8 @@
                                  (:down-tri key-colors))]
                      {:R color :G color :B color}))
             :sound (atom (triad-sound xy-index category))
-            :drawn (atom false)})
+            :enharmonics (atom nil)
+            :played (atom false)})
 
 (defn update-db [db components]
   (if (empty? components)
@@ -107,36 +109,10 @@
                                           {:R 0 :G 0 :B 255}
                                           {:R (:hex key-colors) :G (:hex key-colors) :B (:hex key-colors)})]]
                     (single-note {:x x :y y} key-color (nth (nth note-labels y) x))))
+
 (def dyads (create-ads dyad indices []))
 (def triads (create-ads triad indices []))
 
 (def entity-component-db (hash-map))
 (def entity-component-db
   (update-db entity-component-db (into single-notes (into dyads triads))))
-
-(def dyad-entities (entities-with-component :dyad))
-(def triad-entities (entities-with-component :triad))
-
-(defn same-sounds? [a b]
-  ((complement empty?) (some #{a} (combo/permutations b))))
-
-(defn same-sound-entities [sound]
-  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
-        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
-    (map #(first %) entity-components)))
-
-(defn sound-intersections [ad-entities]
-  (apply merge
-         (doall
-          (for [entity-component ad-entities
-                :let [entities (same-sound-entities @(:sound (last entity-component)))
-                      perms (combo/permutations entities)]]
-            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
-
-(def shared-dyads (sound-intersections dyad-entities))
-(def shared-triads (sound-intersections triad-entities))
-
-(defn update-drawn [value entity]
-  (let [component (first (entity entity-component-db))]
-    (swap! (:drawn component) (fn [x] value))))
-

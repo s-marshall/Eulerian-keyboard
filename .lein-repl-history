@@ -1,500 +1,500 @@
-(component dyad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (:square key-colors)]
-                           {:R color :G color :B color}))
-            :sound (atom (into () (dyad-sound xy-index category)))})
-(component triad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (if (odd? category)
-                                 (:up-tri key-colors)
-                                 (:down-tri key-colors))]
-                     {:R color :G color :B color}))
-            :sound (atom (triad-sound xy-index category))})
-(defmacro component [component-name params & settings]
-  `(defn ~component-name ~params
-     (merge ~{:name (keyword (name component-name))} ~@settings)))
-(defmacro component [component-name params & settings]
-  `(defn ~component-name ~params
-     (merge ~{:name (keyword (name component-name))} ~@settings)))
-(defn add-component-to-entity [entity-component-db component entity]
-  (let [stored-component (entity entity-component-db)
-        not-stored? (nil? stored-component)
-        entity-component-db (if not-stored?
-                              (merge {entity [component]} entity-component-db)
-                              (let [has-component? (some #(= (:name %) (:name component)) stored-component)]
-                                (if has-component?
-                                  entity-component-db
-;                                  (assoc-in entity-component-db [entity] (conj stored-component component)))))]
-                                  (swap! (entity entity-component-db) (conj stored-component component)))))]
-    entity-component-db))
-(component single-note
-           [xy-index color label]
-           {:xy-index (atom xy-index)
-            :sound (atom (single-note-sound xy-index))
-            :color (atom color)
-            :label (atom label)})
-(component dyad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (:square key-colors)]
-                           {:R color :G color :B color}))
-            :sound (atom (into () (dyad-sound xy-index category)))})
-(component triad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (if (odd? category)
-                                 (:up-tri key-colors)
-                                 (:down-tri key-colors))]
-                     {:R color :G color :B color}))
-            :sound (atom (triad-sound xy-index category))})
-(def single-notes (for [x (range 12) y (range 9)
-                        :let [key-color (if (= "C" (nth (nth note-labels y) x))
-                                          {:R 0 :G 0 :B 255}
-                                          {:R (:hex key-colors) :G (:hex key-colors) :B (:hex key-colors)})]]
-                    (single-note {:x x :y y} key-color (nth (nth note-labels y) x))))
-single-notes
-(def dyads (create-ads dyad indices []))
-(def triads (create-ads triad indices []))
-dyads
-(def db {})
-(def db (update-db db (into single-notes (into dyads triads))))
-db
-(def ds (entities-with-component :dyad))
-ds
+            component (first (entity entity-component-db))
+            enharmonic-keys (enharmonics entity)]]
+  (when ((complement empty?) enharmonic-keys)
+    (swap! (:enharmonics component) enharmonic-keys)))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            enharmonic-keys (enharmonics entity)]]
+  enharmonic-keys)
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            enharmonic-keys (enharmonics entity)]]
+  component)
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+        ]];    enharmonic-keys (enharmonics entity)]]
+  component)
+(defn enharmonics [sound]
+  (let [enharmonic-keys (filter #(not= entity %) (enharmonic-entities sound))]
+    enharmonic-keys))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+        ]];    enharmonic-keys (enharmonics entity)]]
+  sound)
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonic-keys (enharmonics sound)]]
+  sound)
+(enharmonic-entities (:F5 :A6))
+(enharmonic-entities (:C4 :G4))
+dyad-entities
+(enharmonic-entities (:C4 :G4))
+(defn enharmonic-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (map #(first %) entity-components)))
+(enharmonic-entities (:C4 :G4))
+(defn enharmonic-entities [sound]
+  (println sound)
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (map #(first %) entity-components)))
+(enharmonic-entities `(:C4 :G4))
+(defn enharmonic-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (map #(first %) entity-components)))
+(defn enharmonics [sound]
+  (let [enharmonic-keys (filter #(not= entity %) (enharmonic-entities sound))]
+    enharmonic-keys))
+(enharmonics `(:C4 :G4))
+(enharmonic-entities `(:G4 :C4))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonic-keys (enharmonic-entities sound)]]
+  sound)
+           (enharmonic-entities `(:A4))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+    ]];        enharmonic-keys (enharmonic-entities sound)]]
+  sound)
+(enharmonic-entities `(:A6 :E6))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonic-keys (enharmonic-entities (into [] sound))]]
+  sound)
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+]];            enharmonic-keys (enharmonic-entities sound)]]
+  sound)
+(defn enharmonic-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)
+        p entity-components]
+    (filter #(not= entity %) (map #(first %) entity-components))))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+]];            enharmonic-keys (enharmonic-entities sound)]]
+  nil)
+(defn enharmonic-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)
+        p (println entity-components)]
+    (filter #(not= entity %) (map #(first %) entity-components))))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonic-keys (enharmonic-entities sound)]]
+  nil)
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println sound)
+            enharmonic-keys (enharmonic-entities sound)]]
+  nil)
+(defn enharmonic-entities [sound]
+  (println sound)
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)
+        p (println entity-components)]
+    (filter #(not= entity %) (map #(first %) entity-components))))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println sound)
+            enharmonic-keys (enharmonic-entities sound)]]
+  nil)
+(defn enharmonic-entities [sound]
+  (println sound)
+  (comment let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)
+        p (println entity-components)]
+    (filter #(not= entity %) (map #(first %) entity-components))))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println sound)
+            enharmonic-keys (enharmonic-entities sound)]]
+  nil)
+(defn enharmonic-entities [sound]
+  (println sound)
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)
+        p (println entity-components)]
+    nil))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println sound)
+            enharmonic-keys (enharmonic-entities sound)]]
+  nil)
+dyad-entities
+triad-entities
+(defn enharmonic-entities [sound]
+  (println sound)
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+       ; entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)
+        p (println entities)]
+    nil))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println sound)
+            enharmonic-keys (enharmonic-entities sound)]]
+  nil)
+(defn enharmonic-entities [sound]
+  (println sound)
+  (let [entities 0; (if (= (count sound) 2) dyad-entities triad-entities)
+       ; entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)
+        p (println entities)]
+    nil))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println sound)
+            enharmonic-keys (enharmonic-entities sound)]]
+  nil)
+(defn enharmonic-entities [sound]
+  (println sound)
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+       ; entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+]    nil))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println sound)
+            enharmonic-keys (enharmonic-entities sound)]]
+  nil)
+(defn enharmonic-entities [entity sound]
+  (println entity sound)
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (filter #(not= entity %) (map #(first %) entity-components))))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println sound)
+            enharmonic-keys (enharmonic-entities entity sound)]]
+  nil)
+ (defn enharmonic-entities [entity sound]
+  (println entity sound)
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (filter #(not= entity %) (map #(first %) entity-components))))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println entity sound)
+            enharmonic-keys (enharmonic-entities entity sound)]]
+  enharmonic-keys)
+(tool/deftrace enharmonic-entities [entity sound]
+  (println entity sound)
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (filter #(not= entity %) (map #(first %) entity-components))))
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println entity sound)
+            enharmonic-keys (enharmonic-entities entity sound)]]
+  enharmonic-keys)
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println entity sound)
+            ]]
+  enharmonic-keys)
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println entity sound)
+            ]]
+  nil)
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            p (println entity sound)
+       entities (if (= (count sound) 2) dyad-entities triad-entities)
+            
+            ]]
+  entities)
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))
+            sound (into [] @(:sound component))
+            p (println entity sound)
+       entities (if (= (count sound) 2) dyad-entities triad-entities)
+            
+            ]]
+  entities)
+dyad-entities
+(first dyad-entites)
+(first dyad-entities)
+(first (first dyad-entities))
+(defn enharmonic-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (map #(first %) entity-components)))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (filter #(not= entity %) (enharmonic-entities sound))]]
+      (println entity enharmonics))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (filter #(not= entity %) (enharmonic-entities sound))]
+      :when ((complement empty?) enharmonics)]
+  (swap! (:enharmonics component) enharmonics))
+(defn enharmonic-entities [sound]
+  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
+        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (map #(first %) entity-components)))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (filter #(not= entity %) (enharmonic-entities sound))]
+      :when ((complement empty?) enharmonics)]
+  (swap! (:enharmonics component) enharmonics))
+(enharmonic-entities `(:C4 :G4))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            p (println entity)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (filter #(not= entity %) (enharmonic-entities sound))]
+      :when ((complement empty?) enharmonics)]
+  (swap! (:enharmonics component) enharmonics))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            ]]
+  entity)
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))]]
+  component)
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)]]
+  sound)
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)]]
+  (enharmonic-entities sound))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (filter #(not= entity %) (into [] (enharmonic-entities sound)))]
+      :when ((complement empty?) enharmonics)]
+  (swap! (:enharmonics component) enharmonics))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (enharmonic-entities sound)];(filter #(not= entity %) (into [] (enharmonic-entities sound)))]
+      :when ((complement empty?) enharmonics)]
+  (swap! (:enharmonics component) enharmonics))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (enharmonic-entities sound)]]
+  enharmonics)
+(empty? `())
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (enharmonic-entities sound)]]
+  (empty? enharmonics))
+(filter #(not= 3 %) `(1 2 3 4))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (enharmonic-entities sound)
+            enharmonics (filter #(not= entity %) enharmonics)]
+      :when ((complement empty?) enharmonics)]
+      enharmonics)
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (enharmonic-entities sound)
+            enharmonics (filter #(not= entity %) enharmonics)]
+      :when ((complement empty?) enharmonics)]
+  (swap! (:enharmonics component) enharmonics))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+         
+            sound @(:sound component)
+            enharmonics (enharmonic-entities sound)
+            enharmonics (filter #(not= entity %) enharmonics)]
+      :when ((complement empty?) enharmonics)]
+  [component enharmonics])
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+         
+            sound @(:sound component)
+            enharmonics (enharmonic-entities sound)
+            enharmonics (filter #(not= entity %) enharmonics)]
+      :when ((complement empty?) enharmonics)]
+  (map #(swap! (:enharmonics component) %) enharmonics))
+(def dyad-entities (entities-with-component :dyad))
+dyad-entities
+entity-component-db
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+         
+            sound @(:sound component)
+            enharmonics (enharmonic-entities sound)
+            enharmonics (filter #(not= entity %) enharmonics)]
+      :when ((complement empty?) enharmonics)]
+  (for [e enharmonics]
+    (swap! (:enharmonics component) e)))
+entity-component-db
+(for [ec entity-component-db
+      :let [entity (first ec)
+            component (first (entity entity-component-db))]
+      :when (not= :single-note (:name component))]
+  (let [enharmonic-keys (enharmonic-entities entity @(:sound component))]
+    (when ((complement empty?) enharmonic-keys)
+      (swap! (:enharmonics component) (fn [x] enharmonic-keys)))))
+(for [entity-component dyad-entities
+      :let [entity (first entity-component)
+            component (first (entity entity-component-db))
+            sound @(:sound component)
+            enharmonics (enharmonic-entities sound)
+            enharmonics (filter #(not= entity %) enharmonics)]
+      :when ((complement empty?) enharmonics)]
+  (for [e enharmonics]
+    (swap! (:enharmonics component) (fn [x] e))))
+entity-component-db
+dyad-entities
+(defn update-enharmonics [entities]
+  (for [entity-component entities
+        :let [entity (first entity-component)
+              component (first (entity entity-component-db))
+              sound @(:sound component)
+              enharmonics (enharmonic-entities sound)
+              enharmonics (filter #(not= entity %) enharmonics)]
+        :when ((complement empty?) enharmonics)]
+    (for [e enharmonics]
+      (swap! (:enharmonics component) (fn [x] e)))))
+(update-enharmonics triad-entities)
+(defn enharmonic-entities [sound entities]
+  (let [entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
+    (map #(first %) entity-components)))
+(defn update-enharmonics [entities]
+  (for [entity-component entities
+        :let [entity (first entity-component)
+              component (first (entity entity-component-db))
+              sound @(:sound component)
+              enharmonics (enharmonic-entities sound entities)
+              enharmonics (filter #(not= entity %) enharmonics)]
+        :when ((complement empty?) enharmonics)]
+    (for [e enharmonics]
+      (swap! (:enharmonics component) (fn [x] e)))))
+(update-enharmonics triad-entities)
+entity-component-db
+(defn update-enharmonics [entities]
+  (for [entity-component entities
+        :let [entity (first entity-component)
+              component (first (entity entity-component-db))
+              sound @(:sound component)
+              enharmonics (enharmonic-entities sound entities)
+              enharmonics (filter #(not= entity %) enharmonics)]
+        :when ((complement empty?) enharmonics)]
+    (swap! (:enharmonics component) (fn [x] enharmonics))))
+(update-enharmonics triad-entities)
+entity-component-db
+(update-enharmonics dyad-entities)
+entity-component-db
+(def n :4b9353ad-6666-43eb-a0b0-3a9e59cc070b )
+(defn highlight-keys [entity]
+  (let [component (first (entity entity-component-db))
+        enharmonics @(:enharmonics component)]
+    (for [e enharmonics
+          :let [component (first (e entity-component-db))]]
+      (swap! (:played component) (fn [x] true)))))
+(defn update-enharmonics [entities]
+  (for [entity-component entities
+        :let [entity (first entity-component)
+              component (first (entity entity-component-db))
+              sound @(:sound component)
+              enharmonics (enharmonic-entities sound entities)]
+        :when ((complement empty?) enharmonics)]
+    (swap! (:enharmonics component) (fn [x] enharmonics))))
+(update-enharmonics dyad-entities)
+(update-enharmonics triad-entities)
+n
+(def n :4b9353ad-6666-43eb-a0b0-3a9e59cc070b)
+(highlight-keys n)
+(n entity-component-db)
+(nil)
+(nil?)
+(do (inc 3 ) (dec 5))
+exit
+'(1 2 3)
+(seq [1 2 3])
+(seq [1 ])
+exit
+entity-component-db
+(update-enharmonics dyad-entities)
+entity-component-db
+(update-enharmonics triad-entities)
+entity-component-db
+exit
 (def entity-component-db (hash-map))
 (def entity-component-db
   (update-db entity-component-db (into single-notes (into dyads triads))))
-(entities-with-component :dyad)
 (def dyad-entities (entities-with-component :dyad))
 (def triad-entities (entities-with-component :triad))
 triad-entities
-(defn same-sound-entities [sound]
-  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
-        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
-    (map #(first %) entity-components)))
-(defn same-sound-entities [sound]
-  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
-        entity-components (filter #(same-sounds? sound (:sound @(last %))) entities)]
-    (map #(first %) entity-components)))
-(defn sound-intersections [ad-entities]
-  (apply merge
-         (doall
-          (for [entity-component ad-entities
-                :let [entities (same-sound-entities (:sound @(last entity-component)))
-                      perms (combo/permutations entities)]]
-            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
-(def shared-dyads (sound-intersections dyad-entities))
-(def shared-triads (sound-intersections triad-entities))
-(def entity-component-db (hash-map))
-(def entity-component-db
-  (update-db entity-component-db (into single-notes (into dyads triads))))
-(def dyad-entities (entities-with-component :dyad))
-(def triad-entities (entities-with-component :triad))
-(defn same-sounds? [a b]
-  ((complement empty?) (some #{a} (combo/permutations b))))
-(defn same-sound-entities [sound]
-  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
-        entity-components (filter #(same-sounds? sound (:sound @(last %))) entities)]
-    (map #(first %) entity-components)))
-(defn sound-intersections [ad-entities]
-  (apply merge
-         (doall
-          (for [entity-component ad-entities
-                :let [entities (same-sound-entities (:sound @(last entity-component)))
-                      perms (combo/permutations entities)]]
-            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
-(def shared-dyads (sound-intersections dyad-entities))
-(def shared-triads (sound-intersections triad-entities))
-(defn index->screen-position [xy-index edge-offset]
-  (let [even-row-start (+ (* 1.5 FULL-LENGTH) (* 2 FULL-LENGTH (Math/cos THIRTY-DEG)))
-        odd-row-start (+ FULL-LENGTH (* FULL-LENGTH (Math/cos THIRTY-DEG)))
-        center-spacing (+ FULL-LENGTH (* 2 FULL-LENGTH (Math/cos THIRTY-DEG)))
-        line-spacing  (+ FULL-LENGTH (* 1.5 FULL-LENGTH (Math/cos THIRTY-DEG)))
-        offset (:x xy-index)
-        x-position (if (even? @(:y xy-index))
-                     (+ (:x edge-offset) even-row-start (* offset center-spacing))
-                     (+ (:x edge-offset) odd-row-start (* offset center-spacing)))
-        y-position (+ (:y edge-offset) (* @(:y xy-index) line-spacing))
-        x (+ (:x edge-offset) x-position)
-        y (+ (:y edge-offset) y-position)]
-    {:x x-position :y y-position}))
-(def entity-component-db (hash-map))
-(def entity-component-db
-  (update-db entity-component-db (into single-notes (into dyads triads))))
-(first entity-component-db)
+(update-enharmonics dyad-entities)
+entity-component-db
 exit
-(count entity-component-db)
-dyads
-(def circle-of-fifths ["Eb" "Bb" "F" "C" "G" "D" "A" "E" "B" "F#" "Db" "Ab"])
-(def first-element-in-row ["Eb" "B" "D" "Bb" "Db" "A" "C" "Ab" "B"])
-(defn generate-note-names [names first-element-in-row circle-of-fifths]
-  (if (empty? first-element-in-row)
-    names
-    (let [start-position (.indexOf circle-of-fifths (first first-element-in-row))
-          names (into names [(map #(nth circle-of-fifths (mod % 12)) (range start-position (+ 12 start-position)))])]
-      (generate-note-names names (rest first-element-in-row) circle-of-fifths))))
-(def note-labels (generate-note-names [] first-element-in-row circle-of-fifths))
-(defn single-note-sound [xy-index]
-  (let [x (:x xy-index)
-        y (:y xy-index)
-        octave (- 8 y)
-        note-name (nth (nth note-labels y) x)]
-    (keyword (str note-name octave))))
-(defn get-octave [number]
-  (- 8 (max (min number 8) 0)))
-(defn get-note-name [note-symbol]
-  (let [note-string (name note-symbol)
-        octave (re-find #"\d" note-string)
-        end (.indexOf note-string octave)]
-    (subs note-string 0 end)))
-(defn dyad-sound [reference-note category]
-  (let [x (:x reference-note)
-        y (:y reference-note)
-        first-sound (single-note-sound reference-note)
-        note (get-note-name first-sound)
-        index (.indexOf circle-of-fifths note)
-        note-2 (condp = category
-                 0 {:note (inc index) :octave y}
-                 1 {:note (+ index 9) :octave (inc y)}
-                 2 {:note (+ index 8) :octave (inc y)}
-                 3 {:note (+ index 11) :octave y}
-                 4 {:note (+ index 3) :octave (dec y)}
-                   {:note (+ index 4) :octave (dec y)})
-        second-index (mod (:note note-2) 12)
-        second-note (nth circle-of-fifths second-index)
-        octave (get-octave (:octave note-2))
-        second-sound (keyword (str second-note octave))]
-    [first-sound second-sound]))
-(defn triad-sound [reference-note category]
-  (distinct (flatten [(dyad-sound reference-note category)
-                      (dyad-sound reference-note (mod (inc category) 6))])))
-(component single-note
-           [xy-index color label]
-           {:xy-index (atom xy-index)
-            :sound (atom (single-note-sound xy-index))
-            :color (atom color)
-            :label (atom label)})
-(component dyad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (:square key-colors)]
-                           {:R color :G color :B color}))
-            :sound (atom (into () (dyad-sound xy-index category)))})
-(component triad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (if (odd? category)
-                                 (:up-tri key-colors)
-                                 (:down-tri key-colors))]
-                     {:R color :G color :B color}))
-            :sound (atom (triad-sound xy-index category))})
-(def entity-component-db (hash-map))
-(defn entity []
-  (keyword (str (java.util.UUID/randomUUID))))
-(defmacro component [component-name params & settings]
-  `(defn ~component-name ~params
-     (merge ~{:name (keyword (name component-name))} ~@settings)))
-(defn add-component-to-entity [entity-component-db component entity]
-  (let [stored-component (entity entity-component-db)
-        not-stored? (nil? stored-component)
-        entity-component-db (if not-stored?
-                              (merge {entity [component]} entity-component-db)
-                              (let [has-component? (some #(= (:name %) (:name component)) stored-component)]
-                                (if has-component?
-                                  entity-component-db
-;                                  (assoc-in entity-component-db [entity] (conj stored-component component)))))]
-                                  (swap! (entity entity-component-db) (conj stored-component component)))))]
-    entity-component-db))
-(defn remove-entity [entity]
-  (apply dissoc entity-component-db [entity]))
-(defn entities-with-component [component-name]
-  (for [entity-components entity-component-db
-        :let [entity (key entity-components)
-              components (val entity-components)]
-        :when (some #(= (:name %) component-name) components)]
-    [entity
-     (first (filter #(= component-name (:name %)) (entity entity-component-db)))]))
-(defn component-in-entity [component-name entity]
-  (first (filter #(= component-name (:name %)) (entity entity-component-db))))
-(defn entities-satisfying [goal category entities]
-  (filter #(= goal (category (last %))) entities))
-(defn triad-sound [reference-note category]
-  (distinct (flatten [(dyad-sound reference-note category)
-                      (dyad-sound reference-note (mod (inc category) 6))])))
-(component single-note
-           [xy-index color label]
-           {:xy-index (atom xy-index)
-            :sound (atom (single-note-sound xy-index))
-            :color (atom color)
-            :label (atom label)})
-(component dyad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (:square key-colors)]
-                           {:R color :G color :B color}))
-            :sound (atom (into () (dyad-sound xy-index category)))})
-(component triad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (if (odd? category)
-                                 (:up-tri key-colors)
-                                 (:down-tri key-colors))]
-                     {:R color :G color :B color}))
-            :sound (atom (triad-sound xy-index category))})
-(def input (atom :drag))
-(def key-colors {:hex 0 :square 204 :up-tri 150 :down-tri 82 :label 255})
-(def key-highlight {:R 145 :G 0 :B 0})
-(def key-sounds {:hex :single-note :square :dyad :up-tri :triad :down-tri :triad})
-(def key-played (atom nil))
-(def ^:const scaling-factor 0.35)
-(def ^:const background-color 40)
-(def edge-offset {:x 150 :y 250})
-(def key-indices (for [x (range 12) y (range 9)] [x y]))
-(component dyad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (:square key-colors)]
-                           {:R color :G color :B color}))
-            :sound (atom (into () (dyad-sound xy-index category)))})
-(component triad
-           [xy-index category]
-           {:xy-index (atom xy-index)
-            :category (atom category)
-            :color (atom (let [color (if (odd? category)
-                                 (:up-tri key-colors)
-                                 (:down-tri key-colors))]
-                     {:R color :G color :B color}))
-            :sound (atom (triad-sound xy-index category))})
-(defn update-db [db components]
-  (if (empty? components)
-    db
-    (let [component (first components)]
-      (update-db (add-component-to-entity db component (entity)) (rest components)))))
-(defn create-ads [func-ad indices ads]
-  (if (empty? indices)
-    ads
-    (let [i (first indices)
-          ad (func-ad {:x (:x i) :y (:y i)} (:index i))
-          notes (:sound ad)]
-      (create-ads func-ad (rest indices) (conj ads ad)))))
-(defn contains-note [note ad]
-  (condp = ad
-    :single-note (filter #(= note (:sound (last %))) (entities-with-component ad))
-    (filter #(some #{note} (:sound (last %))) (entities-with-component ad))))
-(def indices
-  (for [x (range 12) y (range 9) index (range 6)]
-    {:x x :y y :index index}))
-(def single-notes (for [x (range 12) y (range 9)
-                        :let [key-color (if (= "C" (nth (nth note-labels y) x))
-                                          {:R 0 :G 0 :B 255}
-                                          {:R (:hex key-colors) :G (:hex key-colors) :B (:hex key-colors)})]]
-                    (single-note {:x x :y y} key-color (nth (nth note-labels y) x))))
-(def dyads (create-ads dyad indices []))
-(def triads (create-ads triad indices []))
-(def entity-component-db (hash-map))
-(def entity-component-db
-  (update-db entity-component-db (into single-notes (into dyads triads))))
-(def dyad-entities (entities-with-component :dyad))
-(def triad-entities (entities-with-component :triad))
-(defn same-sounds? [a b]
-  ((complement empty?) (some #{a} (combo/permutations b))))
-(defn same-sound-entities [sound]
-  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
-        entity-components (filter #(same-sounds? sound (:sound @(last %))) entities)]
-    (map #(first %) entity-components)))
-(defn sound-intersections [ad-entities]
-  (apply merge
-         (doall
-          (for [entity-component ad-entities
-                :let [entities (same-sound-entities (:sound @(last entity-component)))
-                      perms (combo/permutations entities)]]
-            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
-(require [clojure.math.combinatorics :as combo])
-(use [clojure.math.combinatorics :as combo])
-(use '[clojure.math.combinatorics :as combo])
-(combo/permutations [1 2 3])
-(defn same-sounds? [a b]
-  ((complement empty?) (some #{a} (combo/permutations b))))
-(defn same-sound-entities [sound]
-  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
-        entity-components (filter #(same-sounds? sound (:sound @(last %))) entities)]
-    (map #(first %) entity-components)))
-(defn sound-intersections [ad-entities]
-  (apply merge
-         (doall
-          (for [entity-component ad-entities
-                :let [entities (same-sound-entities (:sound @(last entity-component)))
-                      perms (combo/permutations entities)]]
-            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
-(def shared-dyads (sound-intersections dyad-entities))
-(def shared-triads (sound-intersections triad-entities))
-(sound-intersections dyad-entities)
-dyad-entities
-(defn same-sound-entities [sound]
-  (let [entities (if (= (count sound) 2) dyad-entities triad-entities)
-        entity-components (filter #(same-sounds? sound @(:sound (last %))) entities)]
-    (map #(first %) entity-components)))
-(defn sound-intersections [ad-entities]
-  (apply merge
-         (doall
-          (for [entity-component ad-entities
-                :let [entities (same-sound-entities @(:sound (last entity-component)))
-                      perms (combo/permutations entities)]]
-            (apply merge (map #(hash-map (first %) (rest %)) perms))))))
-(def shared-dyads (sound-intersections dyad-entities))
-shared-dyads
-(def shared-triads (sound-intersections triad-entities))
-exit
-(def f (fe)
-)
-(def f (first entity-component-db))
-f
-(swap! (:color (first entity-component-db)) (fn [x] {:R 5 :G 6 :B 7}))
-(:color (first entity-component-db))
-(count entity-component-db)
-(first entity-component-db)
-(swap! (:color (last (first entity-component-db))) (fn [x] {:R 5 :G 6 :B 7}))
-(first entity-component-db)
-(last (first entity-component-db))
-(:color (last (first entity-component-db)))
-(:color (first (last (first entity-component-db))))
-(swap! (:color (first (last (first entity-component-db)))) (fn [x] {:R 5 :G 6 :B 7}))
-(first entity-component-db)
-(defn update-color [color entity]
-  (let [component (first (last (first (entity entity-component-db))))]
-    (swap! (:color component) (fn [x] color))))
-exit
- exit
-exit
-key-colors
-(defn get-key [h value]
-  (let [values (vals h)
-        key-names (keys h)
-        i (.indexOf values value)]
-    (nth key-names i)))
-@normal-color
-@normal-colorexit
-exit
-)
-(play-notes [:C4])
-(play-notes :C4)
-(play-notes [:C4])
-(play-note [:C4])
-exit
-key-played
-exit
-exiexit
-exit
-(let [a 1]
-:when (> a < 10)')
-(let [a 1
-:when (< a 10)]
-a)
-exit
-exi
-exit
-(map #(play-note %) [:C4 :E4 :G4])
-(defn play-notes [sounds-to-play]
-  (map #(play-note %) sounds-to-play))
-(play-notes [:C4 :E4 :G4])
-exit
-(play-note :4)
-(play-note :G4)
-(and (play-note :C4) (play-note :G4))
-(doall (play-note :C4) (play-note :G4))
-exit
-(entities-with-component :dyad)
-exit
-(entities-with-component :dyad)
-(defn update-played [value entity]
-  (let [entity-component (entity entity-component-db)
-        component (last entity-component)]
-    (!swap (:played component) value)))
-(defn update-played [value entity]
-  (let [entity-component (entity entity-component-db)
-        component (last entity-component)]
-    (swap! (:played component) value)))
-(def f (first entity-component-db))
-(def c (last f))
-c
-(def e :ddb22dc6-e9ff-47ce-8123-a40f4bd51a34 )
-e
-(e entity-component-db)
-(defn update-played [value entity]
-  (let [component (entity entity-component-db)]
-    (swap! (:played component) value)))
-(update-played true e)
-(defn update-played [value entity]
-  (let [component (first (entity entity-component-db))]
-    (swap! (:played component) value)))
-(update-played true e)
-(def c (first (e entity-component-db)))
-c
-@(:played c)
-(defn update-played [value entity]
-  (let [component (first (entity entity-component-db))]
-    (swap! (:played component) (fn [x] value))))
-(update-played true e)
-(e entity-component-db)
-(update-played false e)
-(e entity-component-db)
-exit
-(sqrt 4)
-(Math/sqrt 4)
-exit
-(Math/tan THIRTY-DEG)
-exit
-(/ 1 3 2)
-exit
-exitexit
-exit
-shared-dyads
-(apply and '( true false true))
-(apply + '(1 0 0 1 0))
-exit
-(defn key-competitors [entity]
-  (let [component (entity entity-component-db)
-        key-name (:name component)
-        competitors (if (= key-name :dyad) (entity shared-dyads) (entity shared-triads))]
-    (conj competitors entity)))
-(nth entity-component-db 56)
-shared-triads
-(key-competitors :2053d97f-928b-436f-a912-d95d75a8e9b0)
-(defn highlight-color? [key-sharing-entities]
-  (let [played? (apply + (for [entity key-sharing-entities
-                               :let [component (entity entity-component-db)
-                                     played? @(:played component)]]
-                           (if played? 1 0)))]
-    (if (= played? 0) false true)))
-(def k (key-competitors :2053d97f-928b-436f-a912-d95d75a8e9b0))
-k
-(highlight-color? k)
-k
-(first k)
-((first k) entity-component-db)
-(and false false true)
-(defn highlight-color? [key-sharing-entities]
-  (let [played? (apply + (for [entity key-sharing-entities
-                               :let [component (first (entity entity-component-db))
-                                     played? @(:played component)]]
-                           (if played? 1 0)))]
-    (if (= played? 0) false true)))
-(highlight-color? k)
-exit
-(not empty?
-)
-((not empty?) [])
-exit
-(true? true)
+entity-component-db
+(doc assoc-in)
+(doc dissoc)
 exit

@@ -90,17 +90,6 @@
       (find-range theta -30 0)
       (find-range theta 0 0))))
 
-(defn key-competitors [entity]
-  (let [component (entity entity-component-db)
-        competitors (if (= (:name component) :dyad)
-                      (entity shared-dyads)
-                      (entity shared-triads))]
-    (conj competitors entity)))
-
-(defn key-drawn? [key-sharing-entities]
-  (let [drawn (filter #(true? @(:drawn (first (% entity-component-db)))) key-sharing-entities)]
-    (if (empty? drawn) false true)))
-
 (defn type-of-key [position]
   (let [x (:x position)
         y (:y position)
@@ -144,6 +133,6 @@
             possible-sounds (if (= key-type :single-note)
                               [@(:sound (last (first local-keys)))]
                               (into [] @(:sound (last (first (entities-satisfying category :category local-keys))))))]
-        (play-notes possible-sounds)))))
+         (play-notes possible-sounds)))))
 
 
